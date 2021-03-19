@@ -114,7 +114,7 @@ def create_list_of_last_names(list_built_from_file):
 
 def create_list_gender(list_built_from_file):
 
-    gender_list = []
+    gender_list = [] 
     for i in range (3, len(list_built_from_file) -1):
         value_list = []
         value_list = create_list_from_line(list_built_from_file[i])
@@ -130,8 +130,20 @@ def create_heading(list_built_from_file):
     days_raw = line_list[8]
     days = days_raw[1:len(days_raw)-1]
     days_formatted = days.replace(",", "&")
-    heading_string = line_list[0]+ " Days "+ days_formatted 
+    heading_string = line_list[0]+" Period "+line_list[3]+"  Days "+days_formatted 
     return(heading_string) 
+
+def create_output_file_name(list_built_from_file):
+    header_line = 1
+    output_file_name_string = ''
+    line_list = create_list_from_line(list_built_from_file[header_line])
+    days_raw = line_list[8]
+    days = days_raw[1:len(days_raw)-1]
+    days_formatted = days.replace(",", "&")
+    output_file_name_string = line_list[0].replace(" ","_")+"_P"+line_list[3]+"_Days"+days_formatted+".txt" 
+    return(output_file_name_string) 
+
+
 
 ##### Execution Starts Here #####
 
@@ -187,10 +199,9 @@ if args.f:
         if (entry.path.endswith(".csv")  and entry.is_file()):
             
             print(entry.path)
-            output_file_prefix = entry.path
-            output_file = output_file_prefix[:len(output_file_prefix)-3] + "txt" 
-            text_file = open(output_file, "w")
             list_built_from_file = read_csv(entry.path)
+            output_file = directory+"/"+create_output_file_name(list_built_from_file)
+            text_file = open(output_file, "w")
             first_name_list = create_list_of_first_names(list_built_from_file)
             
             if args.g:
@@ -225,10 +236,9 @@ if args.l:
         if (entry.path.endswith(".csv")  and entry.is_file()):
             
             print(entry.path)
-            output_file_prefix = entry.path
-            output_file = output_file_prefix[:len(output_file_prefix)-3] + "txt" 
-            text_file = open(output_file, "w")
             list_built_from_file = read_csv(entry.path)
+            output_file = directory+"/"+create_output_file_name(list_built_from_file)
+            text_file = open(output_file, "w")
             last_name_list = create_list_of_last_names(list_built_from_file)
             
             if args.g:
@@ -263,10 +273,9 @@ if args.fl:
         if (entry.path.endswith(".csv")  and entry.is_file()):
             
             print(entry.path)
-            output_file_prefix = entry.path
-            output_file = output_file_prefix[:len(output_file_prefix)-3] + "txt" 
-            text_file = open(output_file, "w")
             list_built_from_file = read_csv(entry.path)
+            output_file = directory+"/"+create_output_file_name(list_built_from_file)
+            text_file = open(output_file, "w")
             first_name_list = create_list_of_first_names(list_built_from_file)
             last_name_list = create_list_of_last_names(list_built_from_file)
             
@@ -304,10 +313,9 @@ if args.lf:
         if (entry.path.endswith(".csv")  and entry.is_file()):
             
             print(entry.path)
-            output_file_prefix = entry.path
-            output_file = output_file_prefix[:len(output_file_prefix)-3] + "txt" 
-            text_file = open(output_file, "w")
             list_built_from_file = read_csv(entry.path)
+            output_file = directory+"/"+create_output_file_name(list_built_from_file)
+            text_file = open(output_file, "w")
             first_name_list = create_list_of_first_names(list_built_from_file)
             last_name_list = create_list_of_last_names(list_built_from_file)
             
