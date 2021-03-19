@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import sys, getopt, os, argparse, random
+import sys, getopt, os, argparse, random, subprocess
 
 
 # Read CSV file into a list
@@ -163,10 +163,19 @@ group.add_argument('-l', action='store_true', help="last names only")
 group.add_argument('-fl', action='store_true', help="first last")
 group.add_argument('-lf', action='store_true', help="last, first")
 parser.add_argument("-g", help="include gender", action="store_true")
+parser.add_argument("-c", help="convert xlsx files to csv", action="store_true")
 group_sort = parser.add_mutually_exclusive_group()
 group_sort.add_argument('-a', action='store_const', dest='sort_type', const='a', help="alphabetize names", default='a')
 group_sort.add_argument('-r', action='store_const', dest='sort_type', const='r', help="randomize names")
 args = parser.parse_args()
+
+if args.c:
+    print("Converting .xlsx files to .csv files")
+    directory = os.getcwd()
+    for entry in os.scandir(directory):
+        if (entry.path.endswith(".xlsx")  and entry.is_file()):
+            subprocess.call(['libreoffice', '--headless', '--convert-to','csv', entry.path]) 
+
 
 if args.f:
     print("first names only")
