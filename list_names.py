@@ -51,7 +51,7 @@ def create_list_of_first_names(list_built_from_file):
     # aren't records.  The 5th item in the record is the name.
     first_name_list = []
 
-    for i in range (3, len(list_built_from_file) -1):
+    for i in range (3, len(list_built_from_file) ):
         
         value_list = []
         value_list = create_list_from_line(list_built_from_file[i])
@@ -94,7 +94,7 @@ def create_list_of_last_names(list_built_from_file):
     # The name field is formatted as Last, First.  We want First Last. 
     last_name_list = []
     
-    for i in range (3, len(list_built_from_file) -1):
+    for i in range (3, len(list_built_from_file) ):
 
         value_list = []
         value_list = create_list_from_line(list_built_from_file[i])
@@ -115,7 +115,7 @@ def create_list_of_last_names(list_built_from_file):
 def create_list_gender(list_built_from_file):
 
     gender_list = [] 
-    for i in range (3, len(list_built_from_file) -1):
+    for i in range (3, len(list_built_from_file) ):
         value_list = []
         value_list = create_list_from_line(list_built_from_file[i])
         gender_list.append(value_list[gender_position])
@@ -191,13 +191,13 @@ if args.c:
 
 if args.f:
     print("first names only")
-    output_list = []
     directory = os.getcwd()
 
 
     for entry in os.scandir(directory):
         if (entry.path.endswith(".csv")  and entry.is_file()):
             
+            output_list = []
             print(entry.path)
             list_built_from_file = read_csv(entry.path)
             output_file = directory+"/"+create_output_file_name(list_built_from_file)
@@ -229,12 +229,12 @@ if args.f:
  
 if args.l:
     print("last names only")
-    output_list = []
     directory = os.getcwd()
 
     for entry in os.scandir(directory):
         if (entry.path.endswith(".csv")  and entry.is_file()):
             
+            output_list = []
             print(entry.path)
             list_built_from_file = read_csv(entry.path)
             output_file = directory+"/"+create_output_file_name(list_built_from_file)
@@ -266,12 +266,12 @@ if args.l:
     
 if args.fl:
     print("first last")
-    output_list = []
     directory = os.getcwd()
 
     for entry in os.scandir(directory):
         if (entry.path.endswith(".csv")  and entry.is_file()):
             
+            output_list = []
             print(entry.path)
             list_built_from_file = read_csv(entry.path)
             output_file = directory+"/"+create_output_file_name(list_built_from_file)
@@ -306,12 +306,12 @@ if args.fl:
     
 if args.lf:
     print("last, first")
-    output_list = []
     directory = os.getcwd()
 
     for entry in os.scandir(directory):
         if (entry.path.endswith(".csv")  and entry.is_file()):
             
+            output_list = []
             print(entry.path)
             list_built_from_file = read_csv(entry.path)
             output_file = directory+"/"+create_output_file_name(list_built_from_file)
