@@ -57,30 +57,16 @@ def create_list_of_first_names(list_built_from_file):
         value_list = create_list_from_line(list_built_from_file[i])
         full_name = value_list[name_position]
         
-        # make a string called last_first, then slice (str[:2] for example.
-        # Remove characters from start until space after the comma.
-        # End of last name is at the comma.  Find that position
-        last_name_end_pos = 0
-        while (full_name[last_name_end_pos] != ','):
-           last_name_end_pos = last_name_end_pos + 1 
-        
-        # move forward 2 characters to get rid of the comma and space
-        last_name_end_pos = last_name_end_pos + 2
-        first_and_middle = full_name[last_name_end_pos:]
-        # print (first_and_middle)
-
-
-        # now trim off any trailing characters or middle initials
-        # to do this, start at the end of the string, and work
-        # left, looking for a space.
+        # The format is Fist M. Last.  So all I need to do is find the 
+        # first " ".
         first_name_end_pos = 0
-        for i in range (len(first_and_middle)):
-            if (first_and_middle[i] != ' ') and (first_and_middle[i] != '"') :
+        for i in range (len(full_name)):
+            if (full_name[i] != ' ') : 
                 first_name_end_pos = first_name_end_pos + 1
             else:
                  break
 
-        first_name = first_and_middle[:first_name_end_pos]
+        first_name = full_name[:first_name_end_pos]
         first_name_list.append(first_name)
 
 
@@ -99,16 +85,26 @@ def create_list_of_last_names(list_built_from_file):
         value_list = []
         value_list = create_list_from_line(list_built_from_file[i])
         full_name = value_list[name_position]
-        
-        # Find the first comma
-        last_name_end_pos = 0
-        for last_name_end_pos in range (len(full_name) -1):
-            if full_name[last_name_end_pos] == ',' :
+        between_names_count = 0
+       
+        # Find the end of the fist name.  Format is "First M. Last Last"
+        first_name_end_pos = 0
+        for fist_name_end_pos in range (len(full_name) -1):
+            if full_name[first_name_end_pos] == ' ' :
                 break
-        # Strip out the leading quotation mark, and first name    
-        last_name = full_name[1:last_name_end_pos]
+            else:
+                first_name_end_pos = first_name_end_pos + 1
+
+        # If there is a middle initial, increment pointer beyond it,
+        # otherwise increment past the space between first and 
+        # last name.
+        if full_name[first_name_end_pos + 2] == '.':
+            between_names_count = 4
+        else:
+            between_names_count = 1
+
+        last_name = full_name[first_name_end_pos + between_names_count:len(full_name)] 
         last_name_list.append(last_name)
-        # print (last_name)
 
     return(last_name_list)
 
@@ -128,7 +124,15 @@ def create_heading(list_built_from_file):
     heading_string = ''
     line_list = create_list_from_line(list_built_from_file[header_line])
     days_raw = line_list[8]
-    days = days_raw[1:len(days_raw)-1]
+ 
+    # If there is only one day, the field is just the day number.
+    # If the class is on two days, for example Day 1 and Day 2,
+    # the filed looks like this: "1,2" including the quotes.
+    if len(days_raw) == 1:
+            days = days_raw
+    else:
+            days = days_raw[1:len(days_raw)-1]
+
     days_formatted = days.replace(",", "&")
     heading_string = line_list[0]+" Period "+line_list[3]+"  Days "+days_formatted 
     return(heading_string) 
@@ -138,9 +142,25 @@ def create_output_file_name(list_built_from_file):
     output_file_name_string = ''
     line_list = create_list_from_line(list_built_from_file[header_line])
     days_raw = line_list[8]
-    days = days_raw[1:len(days_raw)-1]
+
+    # If there is only one day, the field is just the day number.
+    # If the class is on two days, for example Day 1 and Day 2,
+    # the filed looks like this: "1,2" including the quotes.
+    if len(days_raw) == 1:
+            days = days_raw
+    else:
+            days = days_raw[1:len(days_raw)-1]
+            
     days_formatted = days.replace(",", "&")
-    output_file_name_string = line_list[0].replace(" ","_")+"_P"+line_list[3]+"_Days"+days_formatted+".txt" 
+    
+    # Get rid of "/" in line_list because it will be used as a path. The "/" comes from
+    # the csv file in the form of class names like "STEAM 7/8"
+    line_list[0] = line_list[0].replace("/","&")
+
+    # Get rid of spaces and replace them with "_" to make filenames easier to read.
+    line_list[0] = line_list[0].replace(" ","_")
+
+    output_file_name_string = line_list[0]+"_P"+line_list[3]+"_Days"+days_formatted+".txt" 
     return(output_file_name_string) 
 
 
@@ -149,7 +169,7 @@ def create_output_file_name(list_built_from_file):
 
 
 #Global Variables
-name_position = 4
+name_position = 0
 gender_position = 10
 list_built_from_file = []
 
@@ -198,10 +218,12 @@ if args.f:
         if (entry.path.endswith(".csv")  and entry.is_file()):
             
             output_list = []
-            print(entry.path)
+            # print(entry.path)
             list_built_from_file = read_csv(entry.path)
             output_file = directory+"/"+create_output_file_name(list_built_from_file)
+            # print (output_file)
             text_file = open(output_file, "w")
+
             first_name_list = create_list_of_first_names(list_built_from_file)
             
             if args.g:
